@@ -1,0 +1,195 @@
+Opcje standardu
+
+Implementacja biblioteki pthreads nie musi dostarczać wszystkich funkcji opisanych w standardzie, dopuszcza on szereg opcjonalnych rozszerzeń. W tym podręczniku posługujemy się skrótami używanymi na stronach Open Group:
+
+    rozszerzenia (XSI)
+        zmiana/odczyt rozmiaru zabezpieczającego stosu
+        wybór typu mutexu
+        zmiana/odczyt stopnia współbieżności
+    bariery (BAR)
+    wirujące blokady (SPI)
+    zmiana priorytetu wątku posiadającego blokadę (TPP - Thread Priority Protection, TPI - Thread Priority Inheritance)
+    szeregowanie wątków (TPS - Thread Execution Scheduling)
+    synchronizacja między wątkami różnych procesów (TSH - Thread Process-Shared Synchronization)
+    dodatkowy algorytm szeregowania dla zadań aperiodycznych w systemach czasu rzeczywistego (TPS - Thread Sporadic Server)
+    Rozmiar i adres stosu (TSS - Thread Stack Size Attribute)
+    Rozmiar i adres stosu (TSA - Thread Stack Address Attribute)
+    możliwość wyboru zegara odmierzającego czas przy oczekiwaniu na zmienną warunkową; domyślnie używany jest zegar systemowy (CS - Clock Selection)
+    czas procesora zużyty przez wątek (TCT - Thread CPU-Time Clocks)
+    możliwość ograniczonego czasowo oczekiwania na uzyskanie blokad (mutexy) oraz blokad do odczytu/zapisu (TMO - Timeouts)
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Wszystkie programy zostały skompilowane kompilatorem gcc i uruchomione na Linuxie 2.6, część bez problemów skompilowała się i uruchomiła w Cygwinie.
+
+Kompilator był wywoływany z następującymi opcjami:
+
+gcc -Wall -pedantic -std=c99 -lpthreads program.c -o przyklad
+
+lub
+
+gcc -Wall -pedantic -std=c99 -pthread program.c -o przyklad
+
+Niektóre przykłady (wirujące blokady, bariery) muszą być linkowane z librt, czyli konieczna jest opcja -lrt.
+
+Aby skompilować część z nich trzeba ustawić odpowiednie definicje preprocesora, w szczególności _POSIX_C_SOURCE na odpowiednią wartość - w przykładach jest to 200809L, dając dostęp do funkcji z nowszych rewizji standardu POSIX.
+Wykaz przykładów
+odnośnik 	wykorzystany w rozdziale 	lista funkcji pthreads
+
++--------------------------------------------------------------------------------------------------+
+| https://pl.wikibooks.org/wiki/POSIX_Threads/Przyk%C5%82adowe_programy                            |
+| https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.bpxbd00/ptagets.htm |
++--------------------------------------------------------------------------------------------------+
+
+Program 1 	Tworzenie wątku 	
+
+    pthread_create
+    pthread_join
+
+Program 2 	Przekazywanie argumentów 	
+
+    pthread_create
+    pthread_join
+
+Program 3 	Kończenie wątku 	
+
+    pthread_exit
+    pthread_create
+    pthread_join
+
+Program 4 	Atrybuty wątku 	
+
+    pthread_attr_getdetachstate
+    pthread_attr_getguardsize
+    pthread_attr_getinheritsched
+    pthread_attr_getschedparam
+    pthread_attr_getschedpolicy
+    pthread_attr_getscope
+    pthread_attr_getstackaddr
+    pthread_attr_getstacksize
+    pthread_attr_init
+
+Program 5 	Stos funkcji finalizujących (cleanup) 	
+
+    pthread_cleanup_pop
+    pthread_cleanup_push
+    pthread_create
+    pthread_exit
+    pthread_join
+
+Program 6 	Funkcje wywoływane jednokrotnie 	
+
+    pthread_once
+    pthread_create
+    pthread_join
+
+Program 7 	Przerywanie wątków 	
+
+    pthread_cancel
+    pthread_setcancelstate
+    pthread_setcanceltype
+    pthread_testcancel
+    pthread_cleanup_push
+    pthread_create
+    pthread_join
+
+Program 8 	Typy mutexów 	
+
+    pthread_mutexattr_settype
+    pthread_mutexattr_init
+    pthread_mutex_unlock
+    pthread_mutex_lock
+    pthread_create
+    pthread_join
+
+Program 9 	Zmienne warunkowe 	
+
+    pthread_cond_wait
+    pthread_cond_signal
+    pthread_cond_broadcast
+    pthread_mutex_lock
+    pthread_mutex_unlock
+    pthread_create
+
+Program 10 	Lokalne dane wątku 	
+
+    pthread_key_create
+    pthread_key_delete
+    pthread_setspecific
+    pthread_getspecific
+    pthread_create
+    pthread_join
+
+Program 11 	Bariery 	
+
+    pthread_barrier_init
+    pthread_barrier_destroy
+    pthread_barrier_wait
+    pthread_create
+
+Program 12 	Rozmiar i adres stosu 	
+
+    pthread_attr_setstacksize
+    pthread_attr_getstacksize
+    pthread_attr_init
+    pthread_attr_destroy
+    pthread_create
+    pthread_join
+
+Program 13 	UNIX-owe sygnały 	
+
+    pthread_kill
+    pthread_sigmask
+    pthread_create
+    pthread_self
+
+Program 14 	Czas procesora zużyty przez wątek 	
+
+    pthread_getcpuclockid
+    clock_gettime (nie pthreads)
+    pthread_create
+    pthread_join
+
+Program 15 	Pozyskiwanie i zwolnienie blokady 	
+
+    pthread_mutex_lock
+    pthread_mutex_unlock
+    pthread_mutex_init
+    pthread_create
+    pthread_join
+
+Program 16 	Blokady zapis/odczyt 	
+
+    pthread_rwlock_init
+    pthread_rwlock_rdlock
+    pthread_rwlock_wrlock
+    pthread_rwlock_unlock
+    pthread_create
+
+Program 17 	Synchronizacja między wątkami różnych procesów 	
+
+    pthread_cond_init
+    pthread_cond_signal
+    pthread_cond_wait
+    pthread_condattr_init
+    pthread_condattr_setpshared
+    pthread_mutex_init
+    pthread_mutex_lock
+    pthread_mutex_unlock
+    pthread_mutexattr_init
+    pthread_mutexattr_setpshared
+
+Program 18 	Pthreads i forkowanie 	
+
+    pthread_atfork
+    pthread_create
+
+Program 19 	Wybór algorytmu szeregowania i ustawienie jego parametrów 	
+
+    pthread_attr_setinheritsched
+    pthread_attr_setschedpolicy
+    pthread_attr_setschedparam
+    sched_get_priority_min
+    sched_get_priority_max
+    pthread_attr_init
+    pthread_attr_destroy
+    pthread_create
+    pthread_join
